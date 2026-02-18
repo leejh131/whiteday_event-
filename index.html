@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>대구 여행</title>
+<title>대전 여행</title>
 
 <style>
 * { box-sizing: border-box; }
@@ -19,6 +19,7 @@ body{
   padding:24px;
   overflow:hidden;
 
+  /* 초기 배경 이미지 (01.jpg) */
   background-image:
     linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
     url("01.jpg");
@@ -39,7 +40,7 @@ body{
   text-align:center;
   box-shadow:0 15px 40px rgba(0,0,0,.25);
   position:relative;
-  z-index:10; /* ✅ 클릭 안 막히게 */
+  z-index:10;
 }
 
 h1{
@@ -53,7 +54,7 @@ h1{
   width:280px;
   height:56px;
   margin:0 auto;
-  touch-action: manipulation; /* ✅ 모바일 탭 반응 개선 */
+  touch-action: manipulation;
 }
 
 .btn{
@@ -66,8 +67,8 @@ h1{
   font-size:16px;
   cursor:pointer;
   user-select:none;
-  z-index:20;            /* ✅ 클릭 안 막히게 */
-  pointer-events:auto;   /* ✅ 클릭 안 막히게 */
+  z-index:20;
+  pointer-events:auto;
   transition: transform .15s ease;
 }
 
@@ -81,7 +82,7 @@ h1{
   font-size:20px;
   font-weight:700;
   color:#ff4d6d;
-  display:none;
+  display:none; /* 초기에는 숨김 */
 }
 
 .heart{
@@ -100,8 +101,8 @@ h1{
 
 <body>
   <div class="card">
-    <h1>
-     대전 여행 <br>파티원 모집 중 (1/2)
+    <h1 id="mainTitle">
+      대전 여행 <br>파티원 모집 중 (1/2)
     </h1>
 
     <div class="btn-container" id="btnArea">
@@ -109,25 +110,39 @@ h1{
       <button class="btn no" id="noBtn" type="button">No</button>
     </div>
 
-    <div class="result" id="result">❤️ 대구 여행 확정~ ❤️</div>
+    <div class="result" id="result">❤️ 대전 여행 확정 (2/2) ❤️</div>
   </div>
 
 <script>
 (function () {
-  const yesBtn = document.getElementById("yesBtn") || document.querySelector(".yes");
-  const noBtn  = document.getElementById("noBtn")  || document.querySelector(".no");
-  const btnArea = document.getElementById("btnArea") || document.querySelector(".btn-container");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
+  const btnArea = document.getElementById("btnArea");
   const result = document.getElementById("result");
+  const mainTitle = document.getElementById("mainTitle");
 
-  if (!yesBtn || !noBtn || !btnArea) {
-    // 요소가 없으면(복붙 실수) 그냥 종료
-    return;
-  }
+  if (!yesBtn || !noBtn || !btnArea) return;
 
+  // Yes 버튼 클릭 시 실행
   yesBtn.addEventListener("click", () => {
+    // 1. 배경 이미지 변경 (02.jpg)
     document.body.style.backgroundImage =
       'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
-    if (result) result.style.display = "block";
+    
+    // 2. 상단 제목 (1/2) -> (2/2) 변경
+    if (mainTitle) {
+      mainTitle.innerHTML = "대전 여행 <br>파티원 모집 완료 (2/2)";
+    }
+
+    // 3. 결과 메시지 표시
+    if (result) {
+      result.style.display = "block";
+    }
+
+    // 4. 버튼 영역 숨기기 (더 깔끔하게 보이도록)
+    btnArea.style.display = "none";
+
+    // 5. 하트 효과 시작
     createHearts();
   });
 
@@ -156,16 +171,12 @@ h1{
     noBtn.style.top  = y + "px";
   }
 
-  // PC: 올리면 도망
+  // No 버튼 도망다니는 기능
   noBtn.addEventListener("mouseenter", moveNo);
-
-  // 모바일: 누르려는 순간 도망
   noBtn.addEventListener("touchstart", (e) => {
     e.preventDefault();
     moveNo();
   }, { passive:false });
-
-  // 클릭도 방지
   noBtn.addEventListener("click", (e) => {
     e.preventDefault();
     moveNo();
